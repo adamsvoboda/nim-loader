@@ -13,6 +13,7 @@ TO USE:
 
 TODO:
 - Implement syscall support (NimInlineWhispers or SysWhispers3 with indirect syscalls)
+- Fix or add x86 support to all evasion methods
 - Implement more injection methods
 - Implement encryption on shellcode
 - Implement a templating engine to automatically inject shellcode into the loader and compile the exe in multiple formats
