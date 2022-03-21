@@ -25,3 +25,8 @@ REFERENCES & INSPIRATION:
 - SysWhispers3 by klezVirus (@KlezVirus)
 - NimPackt-v1 by Cas van Cooten (@chvancooten)
 - unhook_bof.c by Mr. Un1k0d3r (@MrUn1k0d3r)
+
+EXAMPLES:
+<p align="center>
+    <img src="screenshots/example.png">
+</p>
