@@ -9,6 +9,7 @@ the nim langague itself.
 TO USE:
 - Replace the byte array in `loader.nim` with your own x64 shellcode
 - Compile the EXE and run it: `nim c -d:danger -d:strip --opt:size "loader.nim"`
+- Probably adjust which process you want to inject into by looking in the .nim files of the injection folder method you're using...
 
 TODO:
 - Implement syscall support (NimInlineWhispers or SysWhispers3 with indirect syscalls)
