@@ -27,6 +27,6 @@ REFERENCES & INSPIRATION:
 - unhook_bof.c by Mr. Un1k0d3r (@MrUn1k0d3r)
 
 EXAMPLES:
-<p align="center>
+<p align="center">
     <img src="screenshots/example.png">
 </p>
