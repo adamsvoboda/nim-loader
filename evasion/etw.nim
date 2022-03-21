@@ -1,12 +1,22 @@
+#[
+    Author: Marcello Salvati, Twitter: @byt3bl33d3r
+            Adam Svoboda, @adamsvoboda
+
+    License: BSD 3-Clause
+]#
+
 import winim/lean
 import dynlib
 
 
 proc PatchEtw*(): bool = 
-    # Unlike most ETW patches that just patch EtwEventWrite, we will patch NtTraceEvent which is 
-    # the syscall called by almost all Etw related functions.
-    # Inspiration: https://github.com/Mr-Un1k0d3r/EDRs/blob/main/unhook_bof.c#L92
-    #              https://github.com/byt3bl33d3r/OffensiveNim/blob/master/src/etw_patch_bin.nim
+    #[
+        Unlike most ETW patches that just patch EtwEventWrite, we will patch NtTraceEvent which is  
+        the syscall called by almost all Etw related functions.
+        
+        Inspiration: https://github.com/Mr-Un1k0d3r/EDRs/blob/main/unhook_bof.c#L92
+                     https://github.com/byt3bl33d3r/OffensiveNim/blob/master/src/etw_patch_bin.nim
+    ]#
 
     var
         ntdll: LibHandle
