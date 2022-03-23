@@ -101,6 +101,7 @@ proc injectCreateRemoteThread*[I, T](shellcode: array[I, T]): void =
     echo "[injectCreateRemoteThread] NtWriteVirtualMemory: ", status
     echo "[injectCreateRemoteThread] Bytes written: ", bytesWritten
 
+
     status = NtCreateThreadEx(
         &tHandle, 
         THREAD_ALL_ACCESS, 
