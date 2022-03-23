@@ -7,7 +7,7 @@ import winim/lean
 import dynlib
 
 
-proc PatchAmsi*(): bool = 
+proc patchAMSI*(): bool = 
     # Source: https://github.com/byt3bl33d3r/OffensiveNim/blob/master/src/amsi_patch_bin.nim
     var
         amsi: LibHandle

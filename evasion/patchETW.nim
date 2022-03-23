@@ -9,7 +9,7 @@ import winim/lean
 import dynlib
 
 
-proc PatchEtw*(): bool = 
+proc patchETW*(): bool = 
     #[
         Unlike most ETW patches that just patch EtwEventWrite, we will patch NtTraceEvent which is  
         the syscall called by almost all Etw related functions.

