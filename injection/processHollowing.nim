@@ -8,7 +8,6 @@ import ../syscalls/GetSyscallStub
     Syscalls TODO:
 
     - NtQueryInformationProcess
-    - NtClose
 ]#
 
 type myNtReadVirtualMemory = proc(ProcessHandle: HANDLE, BaseAddress: PVOID, Buffer: PVOID, NumberOfBytesToRead: ULONG, NumberOfBytesReaded: PULONG): NTSTATUS {.stdcall.}
@@ -203,6 +202,4 @@ proc injectProcessHollowing*[byte](shellcode: openArray[byte]): void =
 
     echo "[processHollowing] Shellcode injected and resumed."
 
-    # res = NtClose(hProcess)
-
-    CloseHandle(hProcess)
+    res = NtClose(hProcess)
