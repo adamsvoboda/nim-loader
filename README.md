@@ -12,19 +12,18 @@ TO USE:
 - Probably adjust which process you want to inject into by looking in the .nim files of the injection folder method you're using...
 
 TODO:
-- Implement syscall support (NimInlineWhispers or SysWhispers3 with indirect syscalls)
-- Fix or add x86 support to all evasion methods
 - Implement more injection methods
 - Implement encryption on shellcode
 - Implement a templating engine to automatically inject shellcode into the loader and compile the exe in multiple formats
 
 
-REFERENCES & INSPIRATION:
+References & Inspiration:
 - OffensiveNim by Marcello Salvati (@byt3bl33d3r)
 - NimlineWhispers2 by Alfie Champion (@ajpc500)
 - SysWhispers3 by klezVirus (@KlezVirus)
 - NimPackt-v1 by Cas van Cooten (@chvancooten)
 - unhook_bof.c by Mr. Un1k0d3r (@MrUn1k0d3r)
+- NimGetSyscallStub by S3cur3Th1sSh1t (@ShitSecure)
 
 EXAMPLES:
 <p align="center">
