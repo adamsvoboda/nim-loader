@@ -21,6 +21,9 @@ a shellcode loader that implements common EDR/AV evasion techniques.
 - Replace all compatible API calls with syscalls
 - Add template generator and compiler, cmdline args for shellcode, injection methods, process paths, etc.
 
+### Obfuscation
+- Consider using [denim](https://github.com/moloch--/denim) by @LittleJoeTables for obfuscator-llvm nim compilation support!
+
 
 ### References & Inspiration
 - OffensiveNim by Marcello Salvati (@byt3bl33d3r)
