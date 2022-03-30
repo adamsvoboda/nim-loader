@@ -1,7 +1,9 @@
 # nim-loader 
 
-a work-in-progress adventure into learning nim by cobbling resources together to create 
+a very rough work-in-progress adventure into learning nim by cobbling resources together to create 
 a shellcode loader that implements common EDR/AV evasion techniques.
+
+*This is a mess and is for research purposes only! Please don't expect it to compile and run without your own modifications.*
 
 
 ### Instructions

